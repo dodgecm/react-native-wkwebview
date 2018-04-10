@@ -207,6 +207,9 @@ class WKWebView extends React.Component {
      * A domain whose cookies will be injected into `document.cookies`.  
      */
     injectedCookiesSource: PropTypes.string,
+     * Sets the JS to be injected for every frame.
+     */
+    userScript: PropTypes.string,
     /**
      * Allows custom handling of any webview requests by a JS handler. Return true
      * or false from this method to continue loading the request.
@@ -319,6 +322,7 @@ class WKWebView extends React.Component {
         source={resolveAssetSource(source)}
         injectedJavaScript={this.props.injectedJavaScript}
         injectedCookiesSource={this.props.injectedCookiesSource}
+        userScript={this.props.userScript}
         bounces={this.props.bounces}
         scrollEnabled={this.props.scrollEnabled}
         contentInset={this.props.contentInset}

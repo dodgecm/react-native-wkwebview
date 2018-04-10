@@ -117,6 +117,10 @@ This property specifies how the safe area insets are used to modify the content 
 ### Advanced Communication between React Native and WkWebView
 
 
+- **userScript**
+
+Similar to `injectedJavaScript` but will be injected for every frame upon load. Cannot be changed after first render.
+
 #### Communication from WKWebview to React Native
 
 - **onMessage**

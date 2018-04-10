@@ -34,8 +34,12 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, assign) BOOL openNewWindowInWebView;
 @property (nonatomic, copy) NSString *injectedJavaScript;
 @property (nonatomic, copy) NSString *injectedCookiesSource;
+@property (nonatomic, copy) NSString *userScript;
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
-
+@property (nonatomic, assign) BOOL bounces;
+@property (nonatomic, assign) BOOL pagingEnabled;
+@property (nonatomic, assign) BOOL scrollEnabled;
+@property (nonatomic, assign) BOOL allowsBackForwardNavigationGestures;
 
 - (void)goForward;
 - (void)goBack;
