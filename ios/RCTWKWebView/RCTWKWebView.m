@@ -140,19 +140,17 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 -(void)setInjectedCookiesSource:(NSString *)injectedCookiesSource {
   RCTAssert(!_webView, @"injectedCookiesSource cannot be mutated");
   
-  if (_sendCookies) {
-    NSURL* cookiesURL = [NSURL URLWithString:_injectedCookiesSource];
-    NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:cookiesURL];
-    NSMutableArray* scriptChunks = [NSMutableArray array];
-    for (NSHTTPCookie* cookie in cookies) {
-      NSString* name = [cookie name];
-      NSString* value = [cookie value];
-      [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@=%@';", name, value]];
-    }
-    NSString* scriptSource = [scriptChunks componentsJoinedByString:@""];
-    WKUserScript* cookieScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
-    [_config.userContentController addUserScript:cookieScript];
+  NSURL* cookiesURL = [NSURL URLWithString:injectedCookiesSource];
+  NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:cookiesURL];
+  NSMutableArray* scriptChunks = [NSMutableArray array];
+  for (NSHTTPCookie* cookie in cookies) {
+    NSString* name = [cookie name];
+    NSString* value = [cookie value];
+    [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@=%@';", name, value]];
   }
+  NSString* scriptSource = [scriptChunks componentsJoinedByString:@""];
+  WKUserScript* cookieScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+  [_config.userContentController addUserScript:cookieScript];
 }
 
 - (void)setUserScript:(NSString *)scriptSource

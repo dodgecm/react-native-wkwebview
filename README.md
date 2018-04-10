@@ -121,6 +121,10 @@ This property specifies how the safe area insets are used to modify the content 
 
 Similar to `injectedJavaScript` but will be injected for every frame upon load. Cannot be changed after first render.
 
+- **injectedCookiesSource**
+
+Makes cookies from the given source available to AJAX requests, instead of on the initial web request.  Cannot be changed after first render.
+
 #### Communication from WKWebview to React Native
 
 - **onMessage**
