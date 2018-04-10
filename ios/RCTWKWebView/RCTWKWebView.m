@@ -41,6 +41,7 @@
 {
   WKWebView *_webView;
   NSString *_injectedJavaScript;
+  NSString *_injectedCookiesSource;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -64,6 +65,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     WKUserContentController* userController = [[WKUserContentController alloc]init];
     [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
     config.userContentController = userController;
+    
+    if (_sendCookies && _injectedCookiesSource) {
+      NSURL* cookiesURL = [NSURL URLWithString:_injectedCookiesSource];
+      NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:cookiesURL];
+      NSMutableArray* scriptChunks = [NSMutableArray array];
+      for (NSHTTPCookie* cookie in cookies) {
+        NSString* name = [cookie name];
+        NSString* value = [cookie value];
+        [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@=%@';", name, value]];
+      }
+      NSString* scriptSource = [scriptChunks componentsJoinedByString:@""];
+      WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:scriptSource
+                                                           injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+      [userController addUserScript:cookieScript];
+    }
     
     _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration:config];
     _webView.UIDelegate = self;
