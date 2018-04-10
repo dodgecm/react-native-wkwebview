@@ -33,6 +33,7 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, assign) BOOL allowsLinkPreview;
 @property (nonatomic, assign) BOOL openNewWindowInWebView;
 @property (nonatomic, copy) NSString *injectedJavaScript;
+@property (nonatomic, copy) NSString *injectedCookiesSource;
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
 
 
