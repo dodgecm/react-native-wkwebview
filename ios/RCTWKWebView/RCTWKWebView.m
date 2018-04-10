@@ -41,7 +41,6 @@
 {
   WKWebView *_webView;
   NSString *_injectedJavaScript;
-  NSString *_injectedCookiesSource;
   NSDictionary *_intialSource;
   WKWebViewConfiguration *_config;
 }
@@ -71,7 +70,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
     WKUserContentController* userController = [[WKUserContentController alloc]init];
     [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
     config.userContentController = userController;
-
+    
     _config = config;
   }
   return self;
@@ -135,6 +134,24 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 {
   if ([_webView respondsToSelector:@selector(allowsLinkPreview)]) {
     _webView.allowsLinkPreview = allowsLinkPreview;
+  }
+}
+
+-(void)setInjectedCookiesSource:(NSString *)injectedCookiesSource {
+  RCTAssert(!_webView, @"injectedCookiesSource cannot be mutated");
+  
+  if (_sendCookies) {
+    NSURL* cookiesURL = [NSURL URLWithString:_injectedCookiesSource];
+    NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:cookiesURL];
+    NSMutableArray* scriptChunks = [NSMutableArray array];
+    for (NSHTTPCookie* cookie in cookies) {
+      NSString* name = [cookie name];
+      NSString* value = [cookie value];
+      [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@=%@';", name, value]];
+    }
+    NSString* scriptSource = [scriptChunks componentsJoinedByString:@""];
+    WKUserScript* cookieScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+    [_config.userContentController addUserScript:cookieScript];
   }
 }
 
