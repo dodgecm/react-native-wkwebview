@@ -207,6 +207,7 @@ class WKWebView extends React.Component {
      * A domain whose cookies will be injected into `document.cookies`.  
      */
     injectedCookiesSource: PropTypes.string,
+    /**
      * Sets the JS to be injected for every frame.
      */
     userScript: PropTypes.string,
