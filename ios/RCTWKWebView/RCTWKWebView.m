@@ -1,6 +1,7 @@
 #import "RCTWKWebView.h"
 
 #import "WeakScriptMessageDelegate.h"
+#import "NSHTTPCookie+SetCookie.h"
 
 #import <UIKit/UIKit.h>
 
@@ -144,9 +145,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:cookiesURL];
   NSMutableArray* scriptChunks = [NSMutableArray array];
   for (NSHTTPCookie* cookie in cookies) {
-    NSString* name = [cookie name];
-    NSString* value = [cookie value];
-    [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@=%@';", name, value]];
+    NSString* formattedCookie = [cookie formatForSetCookie];
+    [scriptChunks addObject:[NSString stringWithFormat:@"document.cookie = '%@';", formattedCookie]];
   }
   NSString* scriptSource = [scriptChunks componentsJoinedByString:@""];
   WKUserScript* cookieScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
